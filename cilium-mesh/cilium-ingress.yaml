@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cilium-ingress
+  namespace: default
+spec:
+  ingressClassName: cilium
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: foo-app
+            port:
+              number: 5678
+        path: /foo
+        pathType: Prefix
+      - backend:
+          service:
+            name: bar-app
+            port:
+              number: 5678
+        path: /bar
+        pathType: Prefix

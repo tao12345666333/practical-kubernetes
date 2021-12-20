@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: httpbin
+  name: httpbin
+spec:
+  containers:
+  - command:
+    - /usr/bin/python3
+    - /usr/local/bin/gunicorn
+    - -b
+    - 0.0.0.0:80
+    - httpbin:app
+    - -k
+    - gevent
+    - --log-level
+    - debug
+    env:
+    - name: DEBUG
+      value: "True"
+    image: kennethreitz/httpbin
+    imagePullPolicy: IfNotPresent
+    name: httpbin
+    ports:
+    - containerPort: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: httpbin
+  name: httpbin
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: httpbin
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: httpbin
+  name: httpbin-v1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: httpbin
+  type: ClusterIP
